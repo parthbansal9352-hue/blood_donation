@@ -26,6 +26,7 @@ import {
   formatDate,
   getBloodAvailabilityStatus,
   getStatusBadgeColor,
+  openGoogleMapsDirections,
 } from '../utils/helpers';
 
 // Fix Leaflet default marker icons
@@ -125,8 +126,7 @@ export default function MapPage() {
   const bloodGroups: (BloodGroup | 'all')[] = ['all', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
   const handleGetDirections = (hospital: Hospital) => {
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${hospital.lat},${hospital.lng}`;
-    window.open(url, '_blank');
+    openGoogleMapsDirections(hospital);
   };
 
   if (!user) return null;

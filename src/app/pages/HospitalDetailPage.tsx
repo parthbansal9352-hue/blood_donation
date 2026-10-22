@@ -22,6 +22,7 @@ import {
   getBloodAvailabilityStatus,
   getStatusBadgeColor,
   getStatusColor,
+  openGoogleMapsDirections,
 } from '../utils/helpers';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
@@ -74,8 +75,7 @@ export default function HospitalDetailPage() {
   };
 
   const handleGetDirections = () => {
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${hospital.lat},${hospital.lng}`;
-    window.open(url, '_blank');
+    openGoogleMapsDirections(hospital);
   };
 
   const handleEmergencyRequest = () => {

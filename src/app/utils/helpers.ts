@@ -1,4 +1,54 @@
 import { BloodGroup, Hospital } from '../context/AppContext';
+import { toast } from 'sonner';
+
+export const openGoogleMapsDirections = (
+  destination: Pick<Hospital, 'lat' | 'lng'>
+): void => {
+  const createDirectionsUrl = (origin?: { lat: number; lng: number }): string => {
+    const params = new URLSearchParams({
+      api: '1',
+      destination: `${destination.lat},${destination.lng}`,
+      travelmode: 'driving',
+    });
+
+    if (origin) {
+      params.set('origin', `${origin.lat},${origin.lng}`);
+    }
+
+    return `https://www.google.com/maps/dir/?${params.toString()}`;
+  };
+
+  const mapWindow = window.open(createDirectionsUrl(), '_blank');
+  if (mapWindow) {
+    mapWindow.opener = null;
+  } else {
+    window.location.assign(createDirectionsUrl());
+  }
+
+  if (!navigator.geolocation) {
+    toast.warning(
+      'Live location is unavailable. Google Maps will try to use your current location.'
+    );
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    ({ coords }) => {
+      if (mapWindow && !mapWindow.closed) {
+        mapWindow.location.href = createDirectionsUrl({
+          lat: coords.latitude,
+          lng: coords.longitude,
+        });
+      }
+    },
+    () => {
+      toast.warning(
+        'Could not access your live location. Allow location access to get directions from your current position.'
+      );
+    },
+    { enableHighAccuracy: true, maximumAge: 30000, timeout: 10000 }
+  );
+};
 
 export const calculateDistance = (
   lat1: number,
